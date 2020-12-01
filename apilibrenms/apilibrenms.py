@@ -16,10 +16,9 @@ class LibrenmsApi:
                                 "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
                                 "X-Auth-Token": librenmskey,
                                 "Connection": "keep-alive"
-
                                 }
-    # Read Requests
 
+    # Read Requests
     def readlocations(self):
         api_url = f"{self.api_url}resources/locations"
         r = requests.get(api_url, headers=self.request_headers)
