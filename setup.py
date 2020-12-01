@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name='apilibrenms',
     version='1.0',
-    packages=[''],
+    packages=['apilibrenms'],
     url='https://github.com/djamp42/apilibrenms',
     license='',
     author='Adam Piasecki',
