@@ -9,7 +9,10 @@ class LibrenmsApi:
     """
     def __init__(self, librenmsip, librenmskey):
         """ Constructor for this class. """
-        self.api_url = f"http://{librenmsip}/api/v0/"
+        if librenmsip.startswith("http"):
+            self.api_url = f"{librenmsip}/api/v0/"
+        else:
+            self.api_url = f"http://{librenmsip}/api/v0/"
         self.request_headers = {"Content-Type": "application/json",
                                 "Accept-Language": "en-US,en;q=0.5",
                                 "User-Agent": "djamp42 LibreNMS Python API",
