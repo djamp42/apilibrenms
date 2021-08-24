@@ -23,24 +23,28 @@ class LibrenmsApi:
 
     # Read Requests
     def readlocations(self):
+        """ Return a list of all LibreNMS locations."""
         api_url = f"{self.api_url}resources/locations"
         r = requests.get(api_url, headers=self.request_headers)
         locations = json.loads(r.text)["locations"]
         return locations
 
     def locationsearch(self, searchrequest):
+        """ Return list of devices that match the LibreNMS location searched for """
         api_url = f"{self.api_url}devices?type=location&query={searchrequest}"
         r = requests.get(api_url, headers=self.request_headers)
         devicelist = json.loads(r.text)["devices"]
         return devicelist
 
     def listalldevices(self):
+        """ Return list of all devices in LibreNMS """
         api_url = f"{self.api_url}devices/"
         r = requests.get(api_url, headers=self.request_headers)
         devices = json.loads(r.text)["devices"]
         return devices
 
     def readdevice(self, hostname):
+        """ Return device """
         api_url = f"{self.api_url}devices/{hostname}"
         r = requests.get(api_url, headers=self.request_headers)
         devices = json.loads(r.text)["devices"][0]
@@ -64,6 +68,13 @@ class LibrenmsApi:
         device_ids = json.loads(r.text)["devices"]
         return device_ids
 
+# PORT API Calls
+    def readport(self, portid):
+        api_url = f"{self.api_url}ports/{portid}"
+        r = requests.get(api_url, headers=self.request_headers)
+        port = json.loads(r.text)["port"]
+        return port
+
     def portsearch(self, searchreq):
         api_url = f"{self.api_url}ports/search/{searchreq}"
         r = requests.get(api_url, headers=self.request_headers)
@@ -79,15 +90,15 @@ class LibrenmsApi:
         api_url = f"{self.api_url}devices/{hostname}/ports/{ifname}/{graphtype}?width={width}&height={height}&from={startgraph}&to={endgraph}"
         r = requests.get(api_url, headers=self.request_headers)
         # Strip Height and Width from SVG to make graph CSS Responsive
-        rm_width = re.sub(' width="(.*?)"', "", r.text)
-        finalportgraph = re.sub(' height="(.*?)"', "", rm_width)
+        finalportgraph = self.svgstrip(r.text)
         return finalportgraph
 
+# WIRELESS API CALLS
     def wirelessgraph(self, hostname, graphtype):
         api_url = f"{self.api_url}devices/{hostname}/graphs/wireless/{graphtype}"
         r = requests.get(api_url, headers=self.request_headers)
-        rm_width = re.sub(' width="(.*?)"', "", r.text)
-        finalportgraph = re.sub(' height="(.*?)"', "", rm_width)
+        # Strip Height and Width from SVG to make graph CSS Responsive
+        finalportgraph = self.svgstrip(r.text)
         return finalportgraph
 
     # Write Requests
@@ -100,6 +111,13 @@ class LibrenmsApi:
         api_url = f"{self.api_url}devices/{hostname}"
         r = requests.patch(api_url, json=update_request, headers=self.request_headers)
         return r.text
+
+    # Other Stuff
+    def svgstrip(self, svgdata):
+        """ Strip Height and Width from SVG to make graph CSS Responsive """
+        rm_width = re.sub(' width="(.*?)"', "", svgdata.text)
+        svgfinal = re.sub(' height="(.*?)"', "", rm_width)
+        return svgfinal
 
 
 class LibrenmsFilter:
