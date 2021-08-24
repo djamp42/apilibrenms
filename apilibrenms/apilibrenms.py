@@ -72,7 +72,7 @@ class LibrenmsApi:
     def readport(self, portid):
         api_url = f"{self.api_url}ports/{portid}"
         r = requests.get(api_url, headers=self.request_headers)
-        port = json.loads(r.text)["port"]
+        port = json.loads(r.text)["port"][0]
         return port
 
     def portsearch(self, searchreq):
