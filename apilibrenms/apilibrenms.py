@@ -115,7 +115,7 @@ class LibrenmsApi:
     # Other Stuff
     def svgstrip(self, svgdata):
         """ Strip Height and Width from SVG to make graph CSS Responsive """
-        rm_width = re.sub(' width="(.*?)"', "", svgdata.text)
+        rm_width = re.sub(' width="(.*?)"', "", svgdata)
         svgfinal = re.sub(' height="(.*?)"', "", rm_width)
         return svgfinal
 
