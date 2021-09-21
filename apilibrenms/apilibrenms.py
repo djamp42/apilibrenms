@@ -50,6 +50,13 @@ class LibrenmsApi:
         devices = json.loads(r.text)["devices"][0]
         return devices
 
+    def readdeviceports(self, hostname, dbcolumn):
+        """ Return device """
+        api_url = f"{self.api_url}devices/{hostname}/ports?columns={dbcolumn}"
+        r = requests.get(api_url, headers=self.request_headers)
+        ports = json.loads(r.text)["ports"][0]
+        return ports
+
     def ipv4networks(self):
         api_url = f"{self.api_url}resources/ip/networks"
         r = requests.get(api_url, headers=self.request_headers)
