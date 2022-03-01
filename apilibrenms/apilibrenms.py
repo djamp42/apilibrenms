@@ -75,6 +75,12 @@ class LibrenmsApi:
         device_ids = json.loads(r.text)["devices"]
         return device_ids
 
+    def devicegrps(self):
+        api_url = f"{self.api_url}devicegroups"
+        r = requests.get(api_url, headers=self.request_headers)
+        devicegrps = json.loads(r.text)
+        return devicegrps
+
 # PORT API Calls
     def readport(self, portid):
         api_url = f"{self.api_url}ports/{portid}"
