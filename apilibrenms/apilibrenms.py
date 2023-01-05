@@ -120,8 +120,8 @@ class LibrenmsApi:
         r = requests.post(api_url, json=add_request, headers=self.request_headers)
         return r.text
     def device_del(self, del_request):
-        api_url = f"{self.api_url}devices"
-        r = requests.delete(api_url, json=del_request, headers=self.request_headers)
+        api_url = f"{self.api_url}devices/{del_request}"
+        r = requests.delete(api_url, headers=self.request_headers)
         return r.text
 
     def device_update(self, hostname, update_request):
