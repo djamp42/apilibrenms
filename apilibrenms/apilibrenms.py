@@ -20,24 +20,15 @@ class LibrenmsApi:
                                 "X-Auth-Token": librenmskey,
                                 "Connection": "keep-alive"
                                 }
-# Checks and Tests
-    def canconnect(self):
-        """ Return true if can return base api url
-        
-            lnms = apilibrenms.LibrenmsApi(librenmsip, librenmsapikey)
-            if lnms.canconnect() == False:
-                quit()
-        """
-        api_url = f"{self.api_url}"
+        # Check if we can connect to the LibreNMS API when setting up the class, quit if cannot connect.
         try:
-            r = requests.get(api_url, headers=self.request_headers)
+            r = requests.get(self.api_url, headers=self.request_headers)
         except requests.ConnectionError:
-            print(f"Cannot Connect to URL- {api_url}")
-            return False
+            print(f"Cannot Connect to URL- {self.api_url}")
+            quit()
         if r.status_code == 401:
             print(f"Unauthorized, Check API Key - {self.request_headers['X-Auth-Token']}")
-            return False
-        return True
+            quit()
 
 # Read Requests
     def readlocations(self):
