@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='apilibrenms',
-    version='23.1.5',
+    version='23.4.14',
     packages=['apilibrenms'],
     url='https://github.com/djamp42/apilibrenms',
     license='',

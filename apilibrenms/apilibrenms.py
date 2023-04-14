@@ -20,8 +20,26 @@ class LibrenmsApi:
                                 "X-Auth-Token": librenmskey,
                                 "Connection": "keep-alive"
                                 }
+# Checks and Tests
+    def canconnect(self):
+        """ Return true if can return base api url
+        
+            lnms = apilibrenms.LibrenmsApi(librenmsip, librenmsapikey)
+            if lnms.canconnect() == False:
+                quit()
+        """
+        api_url = f"{self.api_url}"
+        try:
+            r = requests.get(api_url, headers=self.request_headers)
+        except requests.ConnectionError:
+            print(f"Cannot Connect to URL- {api_url}")
+            return False
+        if r.status_code == 401:
+            print(f"Unauthorized, Check API Key - {self.request_headers['X-Auth-Token']}")
+            return False
+        return True
 
-    # Read Requests
+# Read Requests
     def readlocations(self):
         """ Return a list of all LibreNMS locations."""
         api_url = f"{self.api_url}resources/locations"
@@ -114,7 +132,7 @@ class LibrenmsApi:
         finalportgraph = self.svgstrip(r.text)
         return finalportgraph
 
-    # Write Requests
+# Write Requests
     def device_add(self, add_request):
         api_url = f"{self.api_url}devices"
         r = requests.post(api_url, json=add_request, headers=self.request_headers)
@@ -129,7 +147,7 @@ class LibrenmsApi:
         r = requests.patch(api_url, json=update_request, headers=self.request_headers)
         return r.text
 
-    # Other Stuff
+# Other Stuff
     def svgstrip(self, svgdata):
         """ Strip Height and Width from SVG to make graph CSS Responsive """
         rm_width = re.sub(' width="(.*?)"', "", svgdata)
