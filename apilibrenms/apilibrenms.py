@@ -25,10 +25,70 @@ class LibrenmsApi:
             r = requests.get(self.api_url, headers=self.request_headers)
         except requests.ConnectionError:
             print(f"Cannot Connect to URL- {self.api_url}")
-            quit()
+            return quit()
         if r.status_code == 401:
             print(f"Unauthorized, Check API Key - {self.request_headers['X-Auth-Token']}")
-            quit()
+            return quit()
+    
+# Checks and Tests
+    def canconnect(self):
+        """ Return true if can return base api url
+        
+            lnms = apilibrenms.LibrenmsApi(librenmsip, librenmsapikey)
+            if lnms.canconnect() == False:
+                quit()
+        """
+        api_url = f"{self.api_url}"
+        try:
+            r = requests.get(api_url, headers=self.request_headers)
+        except requests.ConnectionError:
+            print(f"Cannot Connect to URL- {api_url}")
+            return False
+        if r.status_code == 401:
+            print(f"Unauthorized, Check API Key - {self.request_headers['X-Auth-Token']}")
+            return False
+        return True
+
+    def get_request(self, request_url: str):
+        api_url = f"{self.api_url}{request_url}"
+        r = requests.get(api_url, headers=self.request_headers)
+        response = json.loads(r.text)
+        return response
+
+    def get_network_ip_addresses(self, network_id: int):
+        output = self.get_request(f"resources/ip/networks/{network_id}/ip")
+        return output
+    
+    def list_ip_addresses(self):
+        output = self.get_request(f"resources/ip/addresses")
+        return output
+    
+    def list_ip_networks(self):
+        output = self.get_request(f"resources/ip/networks")
+        return output
+    
+    def list_devices(self):
+        output = self.get_request(f"devices")
+        return output
+    
+    # Search Devices
+    def search_devices_location(self, location: str):
+        output = self.get_request(f"devices?type=location&query={location}")
+        return output
+    
+    def search_devices_ipv4(self, ip_address: str):
+        output = self.get_request(f"devices?type=ipv4&query={ip_address}")
+        return output
+
+    def get_device(self, hostname: str):
+        output = self.get_request(f"devices/{hostname}")
+        return output
+
+    def get_device_ip_addresses(self, hostname: str):
+        output = self.get_request(f"devices/{hostname}/ip")
+        return output
+    
+# Legacy calls below here
 
 # Read Requests
     def readlocations(self):
@@ -128,6 +188,7 @@ class LibrenmsApi:
         api_url = f"{self.api_url}devices"
         r = requests.post(api_url, json=add_request, headers=self.request_headers)
         return r.text
+    
     def device_del(self, del_request):
         api_url = f"{self.api_url}devices/{del_request}"
         r = requests.delete(api_url, headers=self.request_headers)
