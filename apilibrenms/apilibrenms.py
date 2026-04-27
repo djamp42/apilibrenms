@@ -20,29 +20,13 @@ class LibrenmsApi:
                                 "X-Auth-Token": librenmskey,
                                 "Connection": "keep-alive"
                                 }
-        # Check if we can connect to the LibreNMS API when setting up the class, quit if cannot connect.
+    
+# Checks and Tests
+    def canconnect(self):
         try:
             r = requests.get(self.api_url, headers=self.request_headers)
         except requests.ConnectionError:
             print(f"Cannot Connect to URL- {self.api_url}")
-            return quit()
-        if r.status_code == 401:
-            print(f"Unauthorized, Check API Key - {self.request_headers['X-Auth-Token']}")
-            return quit()
-    
-# Checks and Tests
-    def canconnect(self):
-        """ Return true if can return base api url
-        
-            lnms = apilibrenms.LibrenmsApi(librenmsip, librenmsapikey)
-            if lnms.canconnect() == False:
-                quit()
-        """
-        api_url = f"{self.api_url}"
-        try:
-            r = requests.get(api_url, headers=self.request_headers)
-        except requests.ConnectionError:
-            print(f"Cannot Connect to URL- {api_url}")
             return False
         if r.status_code == 401:
             print(f"Unauthorized, Check API Key - {self.request_headers['X-Auth-Token']}")
@@ -60,15 +44,15 @@ class LibrenmsApi:
         return output
     
     def list_ip_addresses(self):
-        output = self.get_request(f"resources/ip/addresses")
+        output = self.get_request("resources/ip/addresses")
         return output
     
     def list_ip_networks(self):
-        output = self.get_request(f"resources/ip/networks")
+        output = self.get_request("resources/ip/networks")
         return output
     
-    def list_devices(self):
-        output = self.get_request(f"devices")
+    def list_devices(self, param = ""):
+        output = self.get_request(f"devices{param}")
         return output
     
     # Search Devices
@@ -104,7 +88,13 @@ class LibrenmsApi:
         r = requests.get(api_url, headers=self.request_headers)
         devicelist = json.loads(r.text)["devices"]
         return devicelist
-
+    
+    def getlocation(self, locationid):
+        api_url = f"{self.api_url}location/{locationid}"
+        r = requests.get(api_url, headers=self.request_headers)
+        location = json.loads(r.text)["get_location"]
+        return location
+        
     def listalldevices(self):
         """ Return list of all devices in LibreNMS """
         api_url = f"{self.api_url}devices/"
